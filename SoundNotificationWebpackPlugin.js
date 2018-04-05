@@ -8,6 +8,7 @@ var sys = require('util');
 var exect = require('child_process').exec;
 
 var player = 'paplay';
+var startSound;
 var successSound = '/usr/share/sounds/ubuntu/stereo/dialog-information.ogg';
 var errorSound = '/usr/share/sounds/ubuntu/stereo/dialog-error.ogg';
 
@@ -18,11 +19,18 @@ function SoundNotificationWebpackPlugin(options) {
     }
 
     player = options.player || player;
+    startSound = options.startSound;
     successSound = options.successSound || successSound;
     errorSound = options.errorSound || errorSound;
 }
 
 SoundNotificationWebpackPlugin.prototype.apply = function (compiler) {
+
+    compiler.plugin( 'compile', function() {
+        if ( startSound ) {
+            playSound( startSound );
+        }
+    });
 
     compiler.plugin('done', function(stats) {
         
